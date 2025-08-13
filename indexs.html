@@ -1,0 +1,435 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Digital Doodles — Animation Studio</title>
+  <meta name="description" content="Aurora Motion — cinematic animation studio. Character animation • Motion graphics • VFX" />
+
+  <!-- Fonts & icons (CDN) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.28.0/feather.min.css" />
+
+  <style>
+    :root{
+      --bg:#0f1226; /* deep navy */
+      --card:#10121b;
+      --muted:#a8b0c7;
+      --accent:#7ce7c5; /* soft mint */
+      --accent-2:#7b8cff; /* soft violet */
+      --glass: rgba(255,255,255,0.04);
+      --maxw:1200px;
+      --radius:14px;
+      --ease:cubic-bezier(.16,.84,.44,1);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;padding:0;font-family:Inter,system-ui,Segoe UI,Roboto,'Helvetica Neue',Arial;color: #e6eef8;background: radial-gradient(1200px 600px at 10% 10%, rgba(123,140,255,0.06), transparent 10%), radial-gradient(900px 400px at 90% 90%, rgba(124,231,197,0.03), transparent 10%), var(--bg);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      line-height:1.45;
+    }
+    a{color:inherit;text-decoration:none}
+
+    /* Layout */
+    .wrap{max-width:var(--maxw);margin:0 auto;padding:40px 24px}
+    header{display:flex;align-items:center;justify-content:space-between;gap:18px}
+    .brand{display:flex;align-items:center;gap:12px}
+    .logo{width:48px;height:48px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:flex;align-items:center;justify-content:center;color:#05102a;font-weight:800;box-shadow:0 6px 20px rgba(0,0,0,0.5)}
+    nav{display:flex;gap:18px;align-items:center}
+    nav a{padding:8px 12px;border-radius:8px;color:var(--muted);font-weight:600;transition:all .25s var(--ease)}
+    nav a:hover{color:white;transform:translateY(-3px)}
+    .cta{background:linear-gradient(90deg,var(--accent),var(--accent-2));padding:10px 14px;border-radius:10px;color:#05102a;font-weight:700;box-shadow:0 6px 20px rgba(123,140,255,0.08)}
+
+    /* Hero */
+    .hero{display:grid;grid-template-columns:1fr 420px;gap:36px;align-items:center;padding:60px 0}
+    .hero-left{max-width:680px}
+    .kicker{display:inline-block;padding:6px 10px;background:var(--glass);border-radius:999px;color:var(--muted);font-weight:600;margin-bottom:18px}
+    h1{font-size:clamp(28px,4.6vw,52px);margin:0 0 18px;color:white;line-height:1.02}
+    p.lead{color:var(--muted);font-size:1.05rem;margin:0 0 22px}
+    .hero-actions{display:flex;gap:12px;align-items:center}
+    .play-btn{display:inline-flex;align-items:center;gap:10px;padding:12px 16px;border-radius:12px;background:transparent;border:1px solid rgb(243, 236, 236);cursor:pointer;backdrop-filter: blur(6px);transition:transform .18s var(--ease)}
+    .play-btn:hover{transform:translateY(-4px)}
+
+    /* Reel card */
+    .reel-card{background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);border-radius:18px;padding:14px;box-shadow:0 12px 40px rgba(192, 196, 212, 0.6);position:relative;overflow:hidden}
+    .reel-preview{width:100%;height:360px;border-radius:12px;background:linear-gradient(180deg,#07070a,#0b0d16);display:flex;align-items:center;justify-content:center;color:var(--muted)}
+    .reel-preview video{width:100%;height:100%;object-fit:cover;border-radius:10px}
+
+    /* Features */
+    .features{display:flex;gap:12px;margin-top:22px}
+    .feature{background:var(--card);padding:12px;border-radius:12px;flex:1;color:var(--muted);font-weight:600}
+
+    /* About */
+    .about{padding:60px 0}
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+    .team-card{background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);padding:14px;border-radius:12px;text-align:center}
+    .team-photo{width:100%;height:220px;border-radius:10px;object-fit:cover;background:linear-gradient(135deg,#151722,#192032)}
+    .badge{display:inline-block;padding:6px 10px;border-radius:999px;background:rgba(255,255,255,0.03);color:var(--muted);font-weight:700}
+
+    /* Gallery */
+    .gallery{padding:60px 0}
+    .filters{display:flex;gap:8px;margin-bottom:18px}
+    .chip{padding:8px 12px;border-radius:999px;background:rgba(255,255,255,0.02);color:var(--muted);cursor:pointer;transition:all .18s var(--ease)}
+    .chip.active{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#05102a;transform:translateY(-4px)}
+    .grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+    .project{border-radius:12px;overflow:hidden;position:relative;cursor:pointer}
+    .project img{width:100%;height:220px;object-fit:cover;display:block;transition:transform .35s var(--ease)}
+    .project:hover img{transform:scale(1.06)}
+    .meta{position:absolute;left:12px;bottom:12px;padding:8px 12px;border-radius:8px;background:linear-gradient(180deg, rgba(0,0,0,0.45), rgba(0,0,0,0.2));color:white;font-weight:700}
+
+    /* Project modal */
+    .modal{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(2,6,23,0.75);backdrop-filter:blur(6px);opacity:0;pointer-events:none;transition:opacity .2s ease}
+    .modal.open{opacity:1;pointer-events:auto}
+    .modal-card{width:min(1000px,94%);background:linear-gradient(180deg,#0b0d16,#0e1220);border-radius:14px;padding:22px;color:var(--muted);box-shadow:0 30px 80px rgba(0,0,0,0.6)}
+    .modal-media{height:420px;border-radius:10px;background:#000;display:flex;align-items:center;justify-content:center;overflow:hidden}
+    .modal-grid{display:grid;grid-template-columns:1fr 320px;gap:18px;margin-top:16px}
+
+    /* Contact */
+    .contact{padding:60px 0}
+    form{display:grid;gap:12px}
+    input,textarea{padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:var(--muted);min-height:44px}
+    button[type=submit]{padding:12px;border-radius:12px;background:linear-gradient(90deg,var(--accent),var(--accent-2));border:none;color:#05102a;font-weight:700;cursor:pointer}
+
+    footer{padding:28px 0;color:var(--muted);font-size:.95rem;display:flex;justify-content:space-between;align-items:center}
+
+    /* Responsive */
+    @media (max-width:1000px){
+      .hero{grid-template-columns:1fr;}
+      .grid{grid-template-columns:repeat(2,1fr)}
+      .grid-4{grid-template-columns:repeat(2,1fr)}
+    }
+    @media (max-width:600px){
+      .wrap{padding:22px}
+      header{gap:8px}
+      nav{display:none}
+      .mobile-nav-toggle{display:inline-flex}
+      .grid{grid-template-columns:1fr}
+      .grid-4{grid-template-columns:1fr}
+      .hero-left{order:2}
+      .reel-card{order:1}
+    }
+
+    /* Micro-interactions */
+    .hover-glow{position:relative}
+    .hover-glow::after{content:"";position:absolute;inset:0;border-radius:inherit;box-shadow:0 0 40px rgba(123,140,255,0);transition:box-shadow .28s var(--ease)}
+    .hover-glow:hover::after{box-shadow:0 12px 60px rgba(123,140,255,0.12)}
+
+    /* reduced motion */
+    @media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <div class="logo">DD</div>
+        <div>
+          <div style="font-weight:800;color:white">Digital Doodles</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:2px">Studio • Animation • VFX</div>
+        </div>
+      </div>
+
+      <nav aria-label="Primary">
+        <a href="#home">Home</a>
+        <a href="#about">About</a>
+        <a href="#gallery">Gallery</a>
+        <a href="#contact">Contact</a>
+        <a class="cta" href="#contact">Get a Quote</a>
+      </nav>
+
+      <button class="mobile-nav-toggle" aria-label="Open menu" style="display:none;background:transparent;border:none;color:var(--muted);font-weight:700">☰</button>
+    </header>
+
+    <!-- HERO -->
+    <section id="home" class="hero">
+      <div class="hero-left">
+        <div class="kicker">Award-winning animation</div>
+        <h1>We craft cinematic animations that tell unforgettable stories.</h1>
+        <p class="lead">From character-driven narratives to slick motion graphics — we combine art, technology and direction to create high-impact visuals that move audiences.</p>
+        <div class="hero-actions">
+          <button class="play-btn" id="playReel"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" style="transform:translateY(1px)"><path d="M5 3v18l15-9L5 3z" fill="#fff"/></svg> Watch Reel</button>
+          <a class="cta" href="#contact">Hire Us</a>
+        </div>
+
+        <div class="features" aria-hidden>
+          <div class="feature">Character Animation</div>
+          <div class="feature">Motion Graphics</div>
+          <div class="feature">VFX & Compositing</div>
+        </div>
+      </div>
+
+      <aside class="reel-card hover-glow" aria-hidden>
+        <div class="reel-preview" id="reelPreview">
+          <!-- Replace the poster.jpg and reel.mp4 with studio assets -->
+          <video id="reelVideo" playsinline muted loop preload="metadata" poster="https://images.unsplash.com/photo-1526948128573-703ee1aeb6fa?q=80&w=1600&auto=format&fit=crop&ixlib=rb-4.0.3&s=placeholder">
+            <!-- Source placeholders -->
+            <source src="https://cdn.glitch.global/placeholder/reel.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+          </video>
+        </div>
+      </aside>
+    </section>
+
+    <!-- ABOUT -->
+    <section id="about" class="about">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
+        <div>
+          <div class="badge">About the studio</div>
+          <h2 style="margin:8px 0;color:white">Craft, Collaboration, and Creative Direction</h2>
+          <p style="color:var(--muted);max-width:700px">Founded in 2014, Digital Doodles blends cinematic storytelling with technical excellence. We partner with agencies, brands and directors to bring ideas from concept to screen — across commercials, shorts, and immersive experiences.</p>
+        </div>
+        <div style="text-align:right;color:var(--muted)">
+          <div style="font-weight:700;color:white">Notable Clients</div>
+          <div style="margin-top:8px">— StudioX • SparkMedia • DriftLabs</div>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div class="team-card">
+          <img class="team-photo" src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=1400&auto=format&fit=crop&s=placeholder" alt="Director">
+          <div style="margin-top:12px;font-weight:700;color:white">Aisha Rao</div>
+          <div style="color:var(--muted);font-size:14px;margin-top:6px">Creative Director — Story & Direction</div>
+        </div>
+        <div class="team-card">
+          <img class="team-photo" src="https://images.unsplash.com/photo-1545996124-6c2b2d6a9e0f?q=80&w=1400&auto=format&fit=crop&s=placeholder" alt="Lead Animator">
+          <div style="margin-top:12px;font-weight:700;color:white">Deep Patel</div>
+          <div style="color:var(--muted);font-size:14px;margin-top:6px">Head of Character Animation</div>
+        </div>
+        <div class="team-card">
+          <img class="team-photo" src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?q=80&w=1400&auto=format&fit=crop&s=placeholder" alt="VFX Lead">
+          <div style="margin-top:12px;font-weight:700;color:white">Maya Singh</div>
+          <div style="color:var(--muted);font-size:14px;margin-top:6px">VFX & Compositing Lead</div>
+        </div>
+      </div>
+
+      <div style="margin-top:20px;display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+        <div class="badge">Awards</div>
+        <div style="color:var(--muted)">Best Short Animation 2019 • Motion Design Award 2021 • Creative Impact 2023</div>
+      </div>
+    </section>
+
+    <!-- GALLERY -->
+    <section id="gallery" class="gallery">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <div>
+          <div class="badge">Showcase</div>
+          <h2 style="margin:8px 0;color:white">Selected Projects</h2>
+          <p style="color:var(--muted);margin:0">Browse recent character animation, motion graphics, and VFX work.</p>
+        </div>
+        <div style="color:var(--muted);font-size:14px">Filter by category</div>
+      </div>
+
+      <div class="filters" role="tablist" aria-label="Gallery filters">
+        <div class="chip active" data-filter="all">All</div>
+        <div class="chip" data-filter="character">Character</div>
+        <div class="chip" data-filter="motion">Motion Graphics</div>
+        <div class="chip" data-filter="vfx">VFX</div>
+      </div>
+
+      <div class="grid-4" id="projects">
+        <!-- Repeat project cards (replace srcs with real thumbnails) -->
+        <div class="project" data-type="character" data-id="p1" tabindex="0">
+          <img src="https://images.unsplash.com/photo-1526318472351-c75fcf0703d4?q=80&w=1200&auto=format&fit=crop&s=placeholder" alt="Project 1">
+          <div class="meta">Lullaby — Character</div>
+        </div>
+        <div class="project" data-type="motion" data-id="p2" tabindex="0">
+          <img src="https://images.unsplash.com/photo-1505765053807-5f454d2bede2?q=80&w=1200&auto=format&fit=crop&s=placeholder" alt="Project 2">
+          <div class="meta">Pulse — Motion</div>
+        </div>
+        <div class="project" data-type="vfx" data-id="p3" tabindex="0">
+          <img src="https://images.unsplash.com/photo-1511988617509-a57c8a288659?q=80&w=1200&auto=format&fit=crop&s=placeholder" alt="Project 3">
+          <div class="meta">Breakwater — VFX</div>
+        </div>
+        <div class="project" data-type="character" data-id="p4" tabindex="0">
+          <img src="https://images.unsplash.com/photo-1531297484001-80022131f5a1?q=80&w=1200&auto=format&fit=crop&s=placeholder" alt="Project 4">
+          <div class="meta">Tales of Ember — Character</div>
+        </div>
+
+        <div class="project" data-type="motion" data-id="p5" tabindex="0">
+          <img src="https://images.unsplash.com/photo-1482192505345-5655af888cc4?q=80&w=1200&auto=format&fit=crop&s=placeholder" alt="Project 5">
+          <div class="meta">Glow Transit — Motion</div>
+        </div>
+        <div class="project" data-type="vfx" data-id="p6" tabindex="0">
+          <img src="https://images.unsplash.com/photo-1465146633010-34a5b6a4e4d6?q=80&w=1200&auto=format&fit=crop&s=placeholder" alt="Project 6">
+          <div class="meta">Meteor — VFX</div>
+        </div>
+        <div class="project" data-type="character" data-id="p7" tabindex="0">
+          <img src="https://images.unsplash.com/photo-1502685104226-ee32379fefbe?q=80&w=1200&auto=format&fit=crop&s=placeholder" alt="Project 7">
+          <div class="meta">Little Giants — Character</div>
+        </div>
+        <div class="project" data-type="motion" data-id="p8" tabindex="0">
+          <img src="https://images.unsplash.com/photo-1496307042754-b4aa456c4a2d?q=80&w=1200&auto=format&fit=crop&s=placeholder" alt="Project 8">
+          <div class="meta">Neon Grid — Motion</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section id="contact" class="contact">
+      <div style="display:grid;grid-template-columns:1fr 380px;gap:18px;align-items:start">
+        <div>
+          <div class="badge">Let's talk</div>
+          <h2 style="margin:8px 0;color:white">Start your next project with Digital Doodles</h2>
+          <p style="color:var(--muted)">Tell us about your idea — we’ll follow up within 48 hours with a clear proposal and budget estimate.</p>
+           
+         <section id="contact">
+        <h2>Contact Us</h2>
+       <form action="https://submit-form.com/Ydh7iBSP8">
+  <label for="name">Name</label>
+  <input type="text" id="name" name="name" placeholder="Name" required="" />
+  <label for="email">Email</label>
+  <input type="email" id="email" name="email" placeholder="Email" required="" />
+  <label for="message">Message</label>
+  <textarea
+    id="message"
+    name="message"
+    placeholder="Message"
+    required=""
+  ></textarea>
+  <button type="submit">Send</button>
+</form>
+
+          <div style="margin-top:12px;color:var(--muted);font-size:14px">Email: hi@auroramotion.studio • Phone: +91 98765 43210</div>
+        </div>
+
+        <aside style="background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);padding:14px;border-radius:12px">
+          <div style="font-weight:700;color:white;margin-bottom:8px">Our studio</div>
+          <div style="color:var(--muted);font-size:14px">123 Creative Lane<br/>Bengaluru, India</div>
+          <div style="margin-top:12px"> <!-- Map placeholder - replace iframe src with your map -->
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15513.123456789012!2d77.594562!3d12.971599!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTLCsDU4JzUuMCJOIDc3wrAzMicwMC4wIlc!5e0!3m2!1sen!2sin!4v0000000000000" width="100%" height="180" style="border:0;border-radius:8px" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <footer>
+      <div>© <span id="year"></span> Digital Doodles. All rights reserved.</div>
+      <div style="display:flex;gap:12px;align-items:center;color:var(--muted)"><a href="#">Privacy</a><a href="#">Terms</a></div>
+    </footer>
+  </div>
+
+  <!-- Project modal -->
+  <div id="modal" class="modal" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="modal-card" role="document">
+      <button id="modalClose" style="float:right;background:transparent;border:none;color:var(--muted);font-size:18px">✕</button>
+      <div class="modal-media" id="modalMedia">Video / Images</div>
+      <div class="modal-grid">
+        <div>
+          <h3 id="modalTitle" style="color:white;margin:0">Project Title</h3>
+          <p id="modalType" style="color:var(--muted);margin-top:6px">Category • Year</p>
+          <p id="modalDesc" style="color:var(--muted);margin-top:12px">Full project description, responsibilities, pipeline, tools used, client and outcome.</p>
+        </div>
+        <aside style="background:rgba(255,255,255,0.02);padding:12px;border-radius:8px;color:var(--muted)">
+          <div style="font-weight:700;color:white">Team</div>
+          <div style="margin-top:8px">Director • Animator • VFX • Composer</div>
+          <div style="margin-top:12px">Deliverables: Full HD film, .mov, mp4, assets</div>
+        </aside>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // small helpers & interactions
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Reel hover autoplay behavior (play muted loop when visible)
+    const reel = document.getElementById('reelVideo');
+    const reelPreview = document.getElementById('reelPreview');
+    const observer = new IntersectionObserver(entries=>{
+      entries.forEach(e=>{
+        if(e.isIntersecting){
+          reel.play().catch(()=>{});
+        } else {
+          reel.pause();
+        }
+      })
+    },{threshold:0.5});
+    observer.observe(reelPreview);
+
+    // Play reel button opens modal-like large playback
+    document.getElementById('playReel').addEventListener('click', ()=>{
+      reel.requestFullscreen?.();
+      reel.play().catch(()=>{});
+    });
+
+    // Gallery filtering
+    const chips = Array.from(document.querySelectorAll('.chip'));
+    const projects = Array.from(document.querySelectorAll('.project'));
+    chips.forEach(ch => ch.addEventListener('click', ()=>{
+      chips.forEach(c=>c.classList.remove('active'));
+      ch.classList.add('active');
+      const filter = ch.getAttribute('data-filter');
+      projects.forEach(p=>{
+        if(filter === 'all' || p.dataset.type === filter){
+          p.style.display = '';
+          requestAnimationFrame(()=>p.style.opacity = 1);
+        } else {
+          p.style.display = 'none';
+        }
+      });
+    }));
+
+    // Project modal — sample data
+    const modal = document.getElementById('modal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalType = document.getElementById('modalType');
+    const modalDesc = document.getElementById('modalDesc');
+    const modalMedia = document.getElementById('modalMedia');
+    const modalClose = document.getElementById('modalClose');
+
+    const sampleProjects = {
+      p1:{title:'Lullaby',type:'Character • 2024',desc:'A 2:30 short following a child and a dreamlike creature. We handled full character rigging, animation and lighting.',media:'https://www.youtube.com/embed/dQw4w9WgXcQ'},
+      p2:{title:'Pulse',type:'Motion Graphics • 2023',desc:'A brand campaign exploring kinetic typography and data-driven animation.',media:''},
+      p3:{title:'Breakwater',type:'VFX • 2022',desc:'VFX-heavy commercial with fluid sims and compositing. Delivered in 4K.',media:''},
+      p4:{title:'Tales of Ember',type:'Character • 2021',desc:'Festival short — stylized character animation and hand-painted textures.',media:''}
+    };
+
+    function openProject(id){
+      const p = sampleProjects[id] || {title:'Untitled',type:'-',desc:'Details coming soon.'};
+      modalTitle.textContent = p.title;
+      modalType.textContent = p.type;
+      modalDesc.textContent = p.desc;
+      modalMedia.innerHTML = '';
+      if(p.media){
+        const frame = document.createElement('iframe');
+        frame.src = p.media;
+        frame.width = '100%';frame.height = '100%';frame.style.border='0';frame.loading='lazy';
+        modalMedia.appendChild(frame);
+      } else {
+        modalMedia.textContent = 'Project media coming soon.';
+      }
+      modal.classList.add('open');
+      modal.setAttribute('aria-hidden','false');
+    }
+
+    projects.forEach(pr => pr.addEventListener('click', ()=>openProject(pr.dataset.id)));
+    projects.forEach(pr => pr.addEventListener('keypress', (e)=>{ if(e.key === 'Enter') openProject(pr.dataset.id)}));
+
+    modalClose.addEventListener('click', closeModal);
+    modal.addEventListener('click',(e)=>{ if(e.target === modal) closeModal(); });
+    function closeModal(){ modal.classList.remove('open'); modal.setAttribute('aria-hidden','true'); }
+
+    // Contact form: client-side validation + simple success microcopy
+    const form = document.getElementById('contactForm');
+    form.addEventListener('submit', (e)=>{
+      e.preventDefault();
+      const data = new FormData(form);
+      // Here you'd POST to your backend; for demo we show a quick success
+      const name = data.get('name')||'there';
+      alert(`Thanks ${name}! Your message has been received — we will reply within 48 hours.`);
+      form.reset();
+    });
+
+    // Performance: lazy-load images
+    document.addEventListener('DOMContentLoaded', ()=>{
+      const imgs = document.querySelectorAll('img');
+      imgs.forEach(img=>{img.loading='lazy';});
+    });
+  </script>
+
+</body>
+</html>
